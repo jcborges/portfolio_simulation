@@ -1,1 +1,1 @@
-web: voila —-port=$PORT —-no-browser FinnApp.ipynb 
+web: voila --port=$PORT --no-browser FinnApp.ipynb 
