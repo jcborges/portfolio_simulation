@@ -4,7 +4,7 @@ import pandas as pd
 import yfinance as yf
 import matplotlib.pyplot as plt
 import math
-import matplotlib.gridspec as gridspec
+
 
 class Portfolio():
     def __init__(self, tickers: list, weights: list, start_investment: float, start=None, end=None, period = "10y"):
@@ -61,38 +61,21 @@ class Portfolio():
         self.values = all_values
 
 
-    def plot(self):
+    def plot(self, hline=True):
+        """
+        Plot portfolio development
+        :param hline: Show horizontal line with initial investment
+        """
         self._set_heat_params()
-        #G = gridspec.GridSpec(2, 1)
-        #G.update(wspace=0.15, hspace=0.5)
-        #axes_1 = plt.subplot(G[0, 0])
         self.hist.plot(label = "Portfolio", title = "Portfolio Development")
         plt.hlines(self.start_investment, self.hist.index.min(), self.hist.index.max(), colors="r")
         plt.grid()
 
-        #self._set_heat_params()
-        #axes_2 = plt.subplot(G[1, 0])
-        #self.hist.plot(label="Portfolio", title="Portfolio Development with individual stocks contribution")
-        #for i in range(self.n):
-        #    self.values[i].plot(label=self.tickers[i] + " (%.2f)" % self.weights[i])
-        #plt.legend()
-        #plt.grid()
-
-
-    def _set_heat_params(self):
-        plt.cla()
-        plt.clf()
-        plt.close()
-        plt.rcParams['lines.linewidth'] = 3
-        plt.rcParams['lines.markersize'] = 10
-        plt.rcParams['font.size'] = 16
-        plt.rcParams['figure.figsize'] = (23, 14)
-        plt.rcParams['figure.facecolor'] = 'white'
-        plt.xticks(fontsize=16)
-        plt.yticks(fontsize=16)
-
 
     def plot_comparison(self):
+        """
+        Plot portfolio development against development of single stocks
+        """
         for i in range(self.n):
             ss = self._calculate_asset_development(i, False)
             ss.plot(label = self.tickers[i])
@@ -102,6 +85,9 @@ class Portfolio():
 
 
     def summary(self):
+        """
+        Print summary information about portfolio development
+        """
         win = self.hist.iloc[-1] - self.hist.iloc[0]
         years = (self.hist.index[-1] - self.hist.index[0]).days / 365
         yy = math.pow(self.hist.iloc[-1]/self.hist.iloc[0] , 1/years) -1
@@ -114,7 +100,7 @@ class Portfolio():
         print(t2, t3, t4)
 
 
-    def generate_sparplan(self, monthly_investment):
+    def generate_saving_plan(self, monthly_investment):
         sparlist = []
         for i in range(self.n):
             df_asset = self.assets[i]
@@ -143,9 +129,12 @@ class Portfolio():
         return pd.Series(values, index=df_asset.index)
 
     def plot_sparplan(self):
-        self.sparhist.plot(label="SparPlan")
-        self.spar_dev.plot(label="GiroKonto")
-        self.hist.plot(label="EinmalAnlage")
+        """
+        Plots development of a saving plan with a given portfolio. Also shows simulation for a single payment
+        porfolio development and total amount invested over time.
+        """
+        self.sparhist.plot(label="Portfolio Development")
+        self.spar_dev.plot(label="Investment")
+        self.hist.plot(label="Single Payment Curve")
         plt.grid()
         plt.legend()
-
