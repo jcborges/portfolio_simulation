@@ -27,7 +27,7 @@ nbformat==4.4.0
 notebook==6.0.1
 numpy==1.18.4
 pandas==1.0.3
-urllib3==1.25.9
+urllib3==1.26.5
 voila==0.1.21
 widgetsnbextension==3.5.1
 yfinance==0.1.54
